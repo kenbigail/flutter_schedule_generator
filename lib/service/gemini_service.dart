@@ -23,15 +23,13 @@ class GeminiService {
             'Content-Type': 'application/json',
           },
           body: jsonEncode({
-            {
-              "contents": [
-                {
-                  "parts": [
-                    {"text": prompt}
-                  ]
-                }
-              ]
-            }
+            "contents": [
+              {
+                "parts": [
+                  {"text": prompt}
+                ]
+              }
+            ]
           }));
       return _handleResponse(response);
     } catch (e) {
@@ -50,7 +48,7 @@ class GeminiService {
     } else if (response.statusCode == 503) {
       throw ArgumentError("Service Unavailable");
     } else if (response.statusCode == 200) {
-      return data["contents"][0]["parts"][0]["text"];
+      return data["candidates"][0]["content"]["parts"][0]["text"];
     } else {
       throw ArgumentError("Unknown Error");
     }
@@ -59,7 +57,7 @@ class GeminiService {
   String _buildPrompt(List<Task> tasks) {
     final tasksList = tasks
         .map((task) =>
-            "${task.name} (Priority: ${task.priority}, Duration: ${task.duration}, Deadline: ${task.deadline})")
+            "${task.name} (Priority: ${task.priority}, Duration: ${task.duration} minutes, Deadline: ${task.deadline})")
         .join("\n");
     return "Buatkan Jadwal Harian yang optimal berdasarkan task berikut:\n$tasksList";
   }
